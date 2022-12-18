@@ -1,4 +1,4 @@
-module github.com/Johnw7789/shape
+module github.com/enzod3/shapeSB
 go 1.19
 
 require (
