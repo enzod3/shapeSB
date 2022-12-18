@@ -1,4 +1,4 @@
-module github.com/Johnw7789/shape
+module github.com/enzod3/shapeSB
 
 go 1.19
 
@@ -13,4 +13,3 @@ require (
 	github.com/ysmood/leakless v0.8.0 // indirect
 )
 
-replace github.com/Johnw7789/shape => github.com/enzod3/shapeSB v0.0.0-20211102150000-000000000000
