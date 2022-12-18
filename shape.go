@@ -3,6 +3,7 @@ package shape
 import (
 	"fmt"
 	"strings"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
@@ -48,12 +49,12 @@ func LoadSite(page *rod.Page, address string) {
 }
 
 type ShapeHeaders struct {
-	XGyJwza5Za string `json:"X-GyJwza5Z-a"`
-	XGyJwza5Zb string `json:"X-GyJwza5Z-b"`
-	XGyJwza5Zc string `json:"X-GyJwza5Z-c"`
-	XGyJwza5Zd string `json:"X-GyJwza5Z-d"`
-	XGyJwza5Zf string `json:"X-GyJwza5Z-f"`
-	XGyJwza5Zz string `json:"X-GyJwza5Z-z"`
+	XDQ7Hy5L1a string `json:"X-DQ7Hy5L1-a"`
+	XDQ7Hy5L1b string `json:"X-DQ7Hy5L1-b"`
+	XDQ7Hy5L1c string `json:"X-DQ7Hy5L1-c"`
+	XDQ7Hy5L1d string `json:"X-DQ7Hy5L1-d"`
+	XDQ7Hy5L1f string `json:"X-DQ7Hy5L1-f"`
+	XDQ7Hy5L1z string `json:"X-DQ7Hy5L1-z"`
 }
 
 type ShapeHarvester struct {
@@ -116,22 +117,22 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 				for key, value := range ctx.Request.Headers() {
 					switch key {
 					case "X-GyJwza5Z-a":
-						harvester.Headers.XGyJwza5Za = value.String()
+						harvester.Headers.XDQ7Hy5L1a = value.String()
 
 					case "X-GyJwza5Z-b":
-						harvester.Headers.XGyJwza5Zb = value.String()
+						harvester.Headers.XDQ7Hy5L1b = value.String()
 
 					case "X-GyJwza5Z-c":
-						harvester.Headers.XGyJwza5Zc = value.String()
+						harvester.Headers.XDQ7Hy5L1c = value.String()
 
 					case "X-GyJwza5Z-d":
-						harvester.Headers.XGyJwza5Zd = value.String()
+						harvester.Headers.XDQ7Hy5L1d = value.String()
 
 					case "X-GyJwza5Z-f":
-						harvester.Headers.XGyJwza5Zf = value.String()
+						harvester.Headers.XDQ7Hy5L1f = value.String()
 
 					case "X-GyJwza5Z-z":
-						harvester.Headers.XGyJwza5Zz = value.String()
+						harvester.Headers.XDQ7Hy5L1z = value.String()
 					}
 				}
 			}
