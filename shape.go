@@ -49,6 +49,7 @@ func LoadSite(page *rod.Page, address string) {
 }
 
 type ShapeHeaders struct {
+	XDQ7Hy5L1a0 string `json:"X-DQ7Hy5L1-a0"`
 	XDQ7Hy5L1a string `json:"X-DQ7Hy5L1-a"`
 	XDQ7Hy5L1b string `json:"X-DQ7Hy5L1-b"`
 	XDQ7Hy5L1c string `json:"X-DQ7Hy5L1-c"`
@@ -65,6 +66,8 @@ type ShapeHarvester struct {
 	Method         string
 	Body           string
 	Headers        ShapeHeaders
+	ReqHeaders proto.NetworkHeaders
+	ReqPayload string
 	Page           *rod.Page
 	Browser        *rod.Browser
 	BlockResources bool
@@ -113,28 +116,33 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 			if ctx.Request.Method() == "OPTIONS" {
 				ctx.ContinueRequest(&proto.FetchContinueRequest{})
 			} else if ctx.Request.Method() == "POST" {
+				//fmt.Println(ctx.Request.Headers())
 				ctx.Response.Fail(proto.NetworkErrorReasonBlockedByClient)
-				for key, value := range ctx.Request.Headers() {
-					switch key {
-					case "X-GyJwza5Z-a":
-						harvester.Headers.XDQ7Hy5L1a = value.String()
+				harvester.ReqHeaders = ctx.Request.Headers()
+				harvester.ReqPayload = ctx.Request.Body()
+				// for key, value := range ctx.Request.Headers() {
+				// 	switch key {
+				// 	case "X-DQ7Hy5L1-a0":
+				// 		harvester.Headers.XDQ7Hy5L1a0 = value.String()
+				// 	case "X-DQ7Hy5L1-a":
+				// 		harvester.Headers.XDQ7Hy5L1a = value.String()
 
-					case "X-GyJwza5Z-b":
-						harvester.Headers.XDQ7Hy5L1b = value.String()
+				// 	case "X-DQ7Hy5L1-b":
+				// 		harvester.Headers.XDQ7Hy5L1b = value.String()
 
-					case "X-GyJwza5Z-c":
-						harvester.Headers.XDQ7Hy5L1c = value.String()
+				// 	case "X-DQ7Hy5L1-c":
+				// 		harvester.Headers.XDQ7Hy5L1c = value.String()
 
-					case "X-GyJwza5Z-d":
-						harvester.Headers.XDQ7Hy5L1d = value.String()
+				// 	case "X-DQ7Hy5L1-d":
+				// 		harvester.Headers.XDQ7Hy5L1d = value.String()
 
-					case "X-GyJwza5Z-f":
-						harvester.Headers.XDQ7Hy5L1f = value.String()
+				// 	case "X-DQ7Hy5L1-f":
+				// 		harvester.Headers.XDQ7Hy5L1f = value.String()
 
-					case "X-GyJwza5Z-z":
-						harvester.Headers.XDQ7Hy5L1z = value.String()
-					}
-				}
+				// 	case "X-DQ7Hy5L1-z":
+				// 		harvester.Headers.XDQ7Hy5L1z = value.String()
+				// 	}
+				// }
 			}
 		}
 
