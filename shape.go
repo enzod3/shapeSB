@@ -160,12 +160,6 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 }
 
 func (harvester *ShapeHarvester) InitializeHarvester(proxy string) {
-	fmt.Println("Initializing harvester")
-	fmt.Println("Initializing harvester")
-	fmt.Println("Initializing harvester")
-	fmt.Println("Initializing harvester")
-	fmt.Println("Initializing harvester")
-	fmt.Println("Initializing harvester")
 	harvester.Browser = NewBrowser(proxy)
 	harvester.Page = NewPage(harvester.Browser)
 
