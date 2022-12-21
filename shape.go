@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/go-rod/rod/lib/proto"
 
 	"github.com/go-rod/stealth"
@@ -22,23 +21,12 @@ func NewBrowser(proxy string) *rod.Browser {
 	if proxy != "" {
 		// Split the proxy string into its components.
 		components := strings.Split(proxy, ":")
-		ip := components[0]
-		port := components[1]
-		username := components[2]
-		password := components[3]
+		url := launcher.New().Proxy(components[0] + ":" + components[1]).MustLaunch()
 
-		// Set the proxy server flag using the extracted components.
-		l := launcher.New()
-		l = l.Set(flags.ProxyServer, ip+":"+port)
-
-		// Launch the browser with the proxy server flag.
-		controlURL, _ := l.Launch()
-		browser := rod.New().ControlURL(controlURL).MustConnect()
-
-		// Handle the proxy server authentication.
-		go browser.MustHandleAuth(username, password)()
-
-		browser.MustIgnoreCertErrors(true)
+		browser := rod.New().ControlURL(url).MustConnect()
+		// auth the proxy
+		// here we use cli tool "mitmproxy --proxyauth user:pass" as an example
+		browser.HandleAuth(components[2], components[3])
 	} else {
 		browser = rod.New().MustConnect()
 	}
