@@ -20,20 +20,28 @@ func NewBrowser(proxy string) *rod.Browser {
 	var browser *rod.Browser
 
 	if proxy != "" {
-		//incomplete code, proxy won't work yet
+		// Split the proxy string into its components.
+		components := strings.Split(proxy, ":")
+		ip := components[0]
+		port := components[1]
+		username := components[2]
+		password := components[3]
 
+		// Set the proxy server flag using the extracted components.
 		l := launcher.New()
-		l = l.Set(flags.ProxyServer, proxy)
+		l = l.Set(flags.ProxyServer, ip+":"+port)
 
+		// Launch the browser with the proxy server flag.
 		controlURL, _ := l.Launch()
 		browser := rod.New().ControlURL(controlURL).MustConnect()
 
-		go browser.MustHandleAuth("user", "password")()
+		// Handle the proxy server authentication.
+		go browser.MustHandleAuth(username, password)()
 
 		browser.MustIgnoreCertErrors(true)
+	} else {
+		browser = rod.New().MustConnect()
 	}
-
-	browser = rod.New().MustConnect()
 
 	return browser
 }
@@ -50,12 +58,12 @@ func LoadSite(page *rod.Page, address string) {
 
 type ShapeHeaders struct {
 	XDQ7Hy5L1a0 string `json:"X-DQ7Hy5L1-a0"`
-	XDQ7Hy5L1a string `json:"X-DQ7Hy5L1-a"`
-	XDQ7Hy5L1b string `json:"X-DQ7Hy5L1-b"`
-	XDQ7Hy5L1c string `json:"X-DQ7Hy5L1-c"`
-	XDQ7Hy5L1d string `json:"X-DQ7Hy5L1-d"`
-	XDQ7Hy5L1f string `json:"X-DQ7Hy5L1-f"`
-	XDQ7Hy5L1z string `json:"X-DQ7Hy5L1-z"`
+	XDQ7Hy5L1a  string `json:"X-DQ7Hy5L1-a"`
+	XDQ7Hy5L1b  string `json:"X-DQ7Hy5L1-b"`
+	XDQ7Hy5L1c  string `json:"X-DQ7Hy5L1-c"`
+	XDQ7Hy5L1d  string `json:"X-DQ7Hy5L1-d"`
+	XDQ7Hy5L1f  string `json:"X-DQ7Hy5L1-f"`
+	XDQ7Hy5L1z  string `json:"X-DQ7Hy5L1-z"`
 }
 
 type ShapeHarvester struct {
@@ -66,8 +74,8 @@ type ShapeHarvester struct {
 	Method         string
 	Body           string
 	Headers        ShapeHeaders
-	ReqHeaders proto.NetworkHeaders
-	ReqPayload string
+	ReqHeaders     proto.NetworkHeaders
+	ReqPayload     string
 	Page           *rod.Page
 	Browser        *rod.Browser
 	BlockResources bool
@@ -151,8 +159,14 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 	go router.Run()
 }
 
-func (harvester *ShapeHarvester) InitializeHarvester() {
-	harvester.Browser = NewBrowser("")
+func (harvester *ShapeHarvester) InitializeHarvester(proxy string) {
+	fmt.Println("Initializing harvester")
+	fmt.Println("Initializing harvester")
+	fmt.Println("Initializing harvester")
+	fmt.Println("Initializing harvester")
+	fmt.Println("Initializing harvester")
+	fmt.Println("Initializing harvester")
+	harvester.Browser = NewBrowser(proxy)
 	harvester.Page = NewPage(harvester.Browser)
 
 	harvester.Page.MustNavigate(harvester.Url).MustWaitLoad()
