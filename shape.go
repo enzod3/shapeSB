@@ -3,9 +3,11 @@ package shape
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/go-rod/rod/lib/proto"
 
 	"github.com/go-rod/stealth"
@@ -21,14 +23,32 @@ func NewBrowser(proxy string) *rod.Browser {
 	if proxy != "" {
 		// Split the proxy string into its components.
 		components := strings.Split(proxy, ":")
-		url := launcher.New().Proxy(components[0] + ":" + components[1]).MustLaunch()
+		ip := components[0]
+		port := components[1]
+		username := components[2]
+		password := components[3]
 
-		browser := rod.New().ControlURL(url).MustConnect()
-		// auth the proxy
-		// here we use cli tool "mitmproxy --proxyauth user:pass" as an example
-		browser.HandleAuth(components[2], components[3])
+		// Set the proxy server flag using the extracted components.
+		l := launcher.New().Headless(false)
+		l = l.Set(flags.ProxyServer, ip+":"+port)
+
+		// Launch the browser with the proxy server flag.
+		controlURL, _ := l.Launch()
+		browser = rod.New().ControlURL(controlURL).MustConnect()
+
+		// Handle the proxy server authentication.
+		go browser.MustHandleAuth(username, password)()
+
+		browser.MustIgnoreCertErrors(true)
 	} else {
-		browser = rod.New().MustConnect()
+		url, err := launcher.New().
+			Headless(false).
+			Launch()
+		if err != nil {
+			panic(err)
+		}
+
+		browser = rod.New().Timeout(time.Minute).ControlURL(url).MustConnect().MustIncognito()
 	}
 
 	return browser
@@ -36,7 +56,6 @@ func NewBrowser(proxy string) *rod.Browser {
 
 func NewPage(browser *rod.Browser) *rod.Page {
 	page := stealth.MustPage(browser)
-
 	return page
 }
 
@@ -113,6 +132,7 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 				ctx.ContinueRequest(&proto.FetchContinueRequest{})
 			} else if ctx.Request.Method() == "POST" {
 				//fmt.Println(ctx.Request.Headers())
+				//fmt.Println(ctx.Request.Headers())
 				ctx.Response.Fail(proto.NetworkErrorReasonBlockedByClient)
 				harvester.ReqHeaders = ctx.Request.Headers()
 				harvester.ReqPayload = ctx.Request.Body()
@@ -149,7 +169,6 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 
 func (harvester *ShapeHarvester) InitializeHarvester(proxy string) {
 	harvester.Browser = NewBrowser(proxy)
-	fmt.Println(harvester.Browser)
 	harvester.Page = NewPage(harvester.Browser)
 
 	harvester.Page.MustNavigate(harvester.Url).MustWaitLoad()
