@@ -161,6 +161,7 @@ func (harvester *ShapeHarvester) InitializeHijacking() {
 
 func (harvester *ShapeHarvester) InitializeHarvester(proxy string) {
 	harvester.Browser = NewBrowser(proxy)
+	fmt.Println(harvester.Browser)
 	harvester.Page = NewPage(harvester.Browser)
 
 	harvester.Page.MustNavigate(harvester.Url).MustWaitLoad()
