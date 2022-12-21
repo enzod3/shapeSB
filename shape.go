@@ -3,7 +3,6 @@ package shape
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -31,24 +30,25 @@ func NewBrowser(proxy string) *rod.Browser {
 		// Set the proxy server flag using the extracted components.
 		l := launcher.New().Headless(false)
 		l = l.Set(flags.ProxyServer, ip+":"+port)
-
+		fmt.Println(l)
 		// Launch the browser with the proxy server flag.
 		controlURL, _ := l.Launch()
-		browser = rod.New().ControlURL(controlURL).MustConnect()
-
+		browser = rod.New().ControlURL(controlURL).MustConnect().MustIncognito()
 		// Handle the proxy server authentication.
 		go browser.MustHandleAuth(username, password)()
 
 		browser.MustIgnoreCertErrors(true)
 	} else {
-		url, err := launcher.New().
-			Headless(false).
-			Launch()
-		if err != nil {
-			panic(err)
-		}
-
-		browser = rod.New().Timeout(time.Minute).ControlURL(url).MustConnect().MustIncognito()
+		// url, err := launcher.New().
+		// 	Headless(false).
+		// 	Devtools(false).
+		// 	Launch()
+		// if err != nil {
+		// 	panic(err)
+		// }
+		url := "ws://127.0.0.1:9222/devtools/browser/96789d07-15ed-4a61-a5e8-194ab6bc4c64" //braveURL//
+		browser = rod.New().ControlURL(url).MustConnect()
+		//go browser.MustHandleAuth("OR750076101", "420wquh")()
 	}
 
 	return browser
@@ -56,6 +56,7 @@ func NewBrowser(proxy string) *rod.Browser {
 
 func NewPage(browser *rod.Browser) *rod.Page {
 	page := stealth.MustPage(browser)
+	//page = page
 	return page
 }
 
@@ -89,6 +90,33 @@ type ShapeHarvester struct {
 }
 
 func (harvester *ShapeHarvester) HarvestHeaders() {
+	// harvester.Page.MustEval(`function test() {
+	// 	try {
+	// 			Object.defineProperty(navigator, 'userAgent', {
+	// 					get: () => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+	// 			});
+
+	// 			Object.defineProperty(navigator, 'webdriver', {
+	// 					get: () => false,
+	// 			});
+
+	// 			Object.defineProperty(navigator, 'plugins', {
+	// 					get: () => [1,2,3,4,5],
+	// 			});
+
+	// 			Object.defineProperty(navigator, 'languages', {
+	// 					get: () => ['en-US', 'en'],
+	// 			});
+
+	// 			Object.defineProperty(navigator, 'maxTouchPoints', {
+	// 					get: () => 1
+	// 			});
+
+	// 			window.chrome = {
+	// 					runtime: {},
+	// 			};
+	// 	} catch {}
+	// };`)
 	harvester.Page.MustEval(fmt.Sprintf(`function shape() {
 		try {
 			fetch("%s", {
